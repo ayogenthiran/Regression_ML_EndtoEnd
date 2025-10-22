@@ -1,0 +1,12 @@
+
+
+#Ignore cursor AI rules
+.cursor/rules/codacy.mdc
+
+# Data folder
+data/
+
+# Virtual environments
+.venv/
+.env/
+*.env
