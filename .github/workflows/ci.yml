@@ -52,7 +52,7 @@ jobs:
         run: |
           aws ecs update-service \
             --cluster housing_api_cluster_ecs \
-            --service housing-api-service \
+            --service housing-api-task-service-3bjfl184 \
             --force-new-deployment \
             --region ca-central-1
 
@@ -61,6 +61,6 @@ jobs:
         run: |
           aws ecs update-service \
             --cluster housing_api_cluster_ecs \
-            --service housing-streamlit-service \
+            --service housing-streamlit-service-9drytahi \
             --force-new-deployment \
             --region ca-central-1
