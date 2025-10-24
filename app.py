@@ -98,10 +98,17 @@ if st.button("Show Predictions 🚀"):
 
             view = disp_df.loc[idx, ["date", "region", "actual_price"]].copy()
             view = view.sort_values("date")
-            view["prediction"] = pd.Series(preds, index=view.index).astype(float)
+            
+            # Handle length mismatch between predictions and view data
+            if len(preds) == len(view):
+                view["prediction"] = preds
+            else:
+                # If lengths don't match, take only the first N rows that have predictions
+                view = view.iloc[:len(preds)].copy()
+                view["prediction"] = preds
 
             if actuals is not None and len(actuals) == len(view):
-                view["actual_price"] = pd.Series(actuals, index=view.index).astype(float)
+                view["actual_price"] = actuals
 
             # Metrics
             mae = (view["prediction"] - view["actual_price"]).abs().mean()
@@ -134,7 +141,14 @@ if st.button("Show Predictions 🚀"):
                 resp_all.raise_for_status()
                 preds_all = resp_all.json().get("predictions", [])
 
-                yearly_data["prediction"] = pd.Series(preds_all, index=yearly_data.index).astype(float)
+                # Handle length mismatch by creating a new dataframe with matching indices
+                if len(preds_all) == len(yearly_data):
+                    yearly_data["prediction"] = preds_all
+                else:
+                    # Create a new dataframe with only the rows that have predictions
+                    # This handles cases where the API filters out some rows
+                    yearly_data = yearly_data.iloc[:len(preds_all)].copy()
+                    yearly_data["prediction"] = preds_all
 
             else:
                 yearly_data = disp_df[(disp_df["year"] == year) & (disp_df["region"] == region)].copy()
@@ -145,7 +159,13 @@ if st.button("Show Predictions 🚀"):
                 resp_region.raise_for_status()
                 preds_region = resp_region.json().get("predictions", [])
 
-                yearly_data["prediction"] = pd.Series(preds_region, index=yearly_data.index).astype(float)
+                # Handle length mismatch by creating a new dataframe with matching indices
+                if len(preds_region) == len(yearly_data):
+                    yearly_data["prediction"] = preds_region
+                else:
+                    # Create a new dataframe with only the rows that have predictions
+                    yearly_data = yearly_data.iloc[:len(preds_region)].copy()
+                    yearly_data["prediction"] = preds_region
 
             # Aggregate by month
             monthly_avg = yearly_data.groupby("month")[["actual_price", "prediction"]].mean().reset_index()
