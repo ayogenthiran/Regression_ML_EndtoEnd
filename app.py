@@ -8,9 +8,9 @@ from pathlib import Path
 # ============================
 # Config
 # ============================
-API_URL = os.environ.get("API_URL", "http://housing-api-service:8000/predict")
-S3_BUCKET = os.getenv("S3_BUCKET", "housing-regression-data-anojan")
-REGION = os.getenv("AWS_REGION", "ca-central-1")
+API_URL = os.environ.get("API_URL", "http://127.0.0.1:8000/predict")
+S3_BUCKET = os.getenv("S3_BUCKET", "housing-regression-data")
+REGION = os.getenv("AWS_REGION", "eu-west-2")
 
 s3 = boto3.client("s3", region_name=REGION)
 
